@@ -4,21 +4,21 @@
       "id": "1",
       "title": "Write project proposal",
       "description": "Draft the initial project proposal document.",
-      "status": "incomplete",
+      "status": "completed",
       "priority": "high"
     },
     {
       "id": "2",
       "title": "Design homepage",
       "description": "Create wireframes for the main homepage layout.",
-      "status": "incomplete",
+      "status": "inprogress",
       "priority": "medium"
     },
     {
       "id": "3",
       "title": "Set up database",
       "description": "Initialize the MongoDB database and collections.",
-      "status": "inprogress",
+      "status": "completed",
       "priority": "high"
     },
     {
@@ -32,21 +32,21 @@
       "id": "5",
       "title": "Prepare presentation slides",
       "description": "Design slides for the team meeting next week.",
-      "status": "incomplete",
+      "status": "completed",
       "priority": "low"
     },
     {
       "id": "6",
       "title": "Conduct code review",
       "description": "Review pull requests for the latest sprint.",
-      "status": "completed",
+      "status": "incomplete",
       "priority": "medium"
     },
     {
       "id": "7",
       "title": "Update project documentation",
       "description": "Add API details to the project README.",
-      "status": "inprogress",
+      "status": "incomplete",
       "priority": "low"
     },
     {
@@ -60,14 +60,14 @@
       "id": "9",
       "title": "Plan marketing strategy",
       "description": "Outline key points for the next marketing campaign.",
-      "status": "completed",
+      "status": "incomplete",
       "priority": "medium"
     },
     {
       "id": "10",
       "title": "Optimize website performance",
       "description": "Improve loading times and reduce bundle size.",
-      "status": "completed",
+      "status": "inprogress",
       "priority": "high"
     }
   ]

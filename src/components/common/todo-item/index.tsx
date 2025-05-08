@@ -30,7 +30,6 @@ export function TodoItem({
         </div>
         <TodoAction />
       </div>
-
       <div className="flex justify-between items-center mt-2">
         <Badge
           variant={
