@@ -11,7 +11,7 @@
       "id": 2,
       "title": "Design homepage",
       "description": "Create wireframes for the main homepage layout.",
-      "status": "inprocess",
+      "status": "inprogress",
       "priority": "medium"
     },
     {
@@ -32,7 +32,7 @@
       "id": 5,
       "title": "Prepare presentation slides",
       "description": "Design slides for the team meeting next week.",
-      "status": "inprocess",
+      "status": "inprogress",
       "priority": "low"
     },
     {
@@ -53,7 +53,7 @@
       "id": 8,
       "title": "Fix UI bugs",
       "description": "Resolve reported UI issues on the dashboard page.",
-      "status": "inprocess",
+      "status": "inprogress",
       "priority": "high"
     },
     {
