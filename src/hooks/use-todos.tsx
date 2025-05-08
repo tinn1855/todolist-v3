@@ -42,24 +42,3 @@ export function useTodos() {
     error,
   };
 }
-
-// ✅ Hàm cập nhật status todo (sử dụng khi kéo thả)
-export async function updateTodoStatus(
-  id: string,
-  status: 'incomplete' | 'inprogress' | 'completed'
-): Promise<Todo> {
-  const res = await fetch(`${URL_API}/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ status }),
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to update status');
-  }
-
-  const updated = await res.json();
-  return updated;
-}

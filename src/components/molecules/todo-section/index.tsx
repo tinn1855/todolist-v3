@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
-import { updateTodoStatus } from '@/hooks/use-todos';
+import { useCallback, useState } from 'react';
 import { TodoItem } from '@/components/common/todo-item';
 import { TodoHeader } from '@/components/common/todo-header';
 import { cn } from '@/lib/utils';
 import type { Todo } from '@/hooks/use-todos';
+import { updateTodoStatus } from '@/hooks/use-update-todo';
 
 interface TodoSectionProps {
   section: 'incomplete' | 'inprogress' | 'completed';
@@ -12,43 +12,70 @@ interface TodoSectionProps {
 }
 
 export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+
   const handleDragStart = useCallback(
     (e: React.DragEvent<HTMLDivElement>, id: string) => {
       e.dataTransfer.setData('text/plain', id);
       e.dataTransfer.effectAllowed = 'move';
+      setDraggedId(id);
     },
     []
   );
-
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const draggedId = e.dataTransfer.getData('text/plain');
-
-    // Nếu status đã đúng thì không cần làm gì
-    const targetTodo = todos.find((todo) => todo.id === draggedId);
-    if (!targetTodo || targetTodo.status === section) return;
-
-    const updatedTodo = { ...targetTodo, status: section };
-
-    // 1. Update UI
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === draggedId ? updatedTodo : todo))
-    );
-
-    // 2. Gọi API để cập nhật
-    try {
-      await updateTodoStatus(draggedId, section);
-    } catch (err) {
-      // 3. Rollback nếu lỗi
-      setTodos(todos);
-      console.error('Failed to update todo status:', err);
-    }
-  };
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   }, []);
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const droppedId = e.dataTransfer.getData('text/plain');
+    if (!droppedId) return;
+
+    const currentTodo = todos.find((t) => t.id === droppedId);
+    if (!currentTodo) return;
+
+    // Nếu todo đang được kéo sang cột khác (khác status)
+    if (currentTodo.status !== section) {
+      const updatedTodo = { ...currentTodo, status: section };
+      const originalTodos = [...todos];
+
+      setTodos((prev) =>
+        prev.map((todo) => (todo.id === droppedId ? updatedTodo : todo))
+      );
+
+      try {
+        await updateTodoStatus(droppedId, section);
+      } catch (err) {
+        console.error('Failed to update todo status:', err);
+        setTodos(originalTodos); // rollback
+      }
+    }
+  };
+
+  const handleDropOnItem = useCallback(
+    (e: React.DragEvent<HTMLDivElement>, targetId: string) => {
+      e.preventDefault();
+      if (!draggedId || draggedId === targetId) return;
+
+      const draggedIndex = todos.findIndex((t) => t.id === draggedId);
+      const targetIndex = todos.findIndex((t) => t.id === targetId);
+      if (
+        draggedIndex === -1 ||
+        targetIndex === -1 ||
+        todos[draggedIndex].status !== section ||
+        todos[targetIndex].status !== section
+      )
+        return;
+
+      const reordered = [...todos];
+      const [draggedTodo] = reordered.splice(draggedIndex, 1);
+      reordered.splice(targetIndex, 0, draggedTodo);
+      setTodos(reordered);
+    },
+    [draggedId, todos, section, setTodos]
+  );
 
   const filteredTodos = todos.filter((todo) => todo.status === section);
 
@@ -74,7 +101,8 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
             key={todo.id}
             draggable
             onDragStart={(e) => handleDragStart(e, todo.id)}
-            className="cursor-move hover:shadow-lg transition-shadow"
+            onDragOver={(e) => handleDropOnItem(e, todo.id)}
+            className="cursor-grab hover:shadow-lg transition-shadow"
           >
             <TodoItem
               title={todo.title}

@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge';
 import { TodoAction } from '../todo-action';
-import { cn } from '@/lib/utils'; // Giả sử bạn dùng utility class
+import { cn } from '@/lib/utils';
 
-interface TodoCardProps {
+interface TodoItemProps {
   title: string;
   description: string;
   priority: 'high' | 'medium' | 'low';
@@ -14,14 +14,25 @@ export function TodoItem({
   description,
   priority,
   status,
-}: TodoCardProps) {
+}: TodoItemProps) {
+  const getPriorityVariant = (priority: TodoItemProps['priority']) => {
+    if (priority === 'high') return 'destructive';
+    if (priority === 'medium') return 'outline';
+    return 'default';
+  };
+
+  const getBorderColorStatus = (status: TodoItemProps['status']) => {
+    if (status === 'completed') return 'border-green-500';
+    if (status === 'inprogress') return 'border-yellow-500';
+    return 'border-red-500';
+  };
+
   return (
     <div
-      className={cn('bg-white p-3 rounded-md border-l-4', {
-        'border-red-500': status === 'incomplete',
-        'border-yellow-500': status === 'inprogress',
-        'border-green-500': status === 'completed',
-      })}
+      className={cn(
+        'bg-white p-3 rounded-md border-l-4',
+        getBorderColorStatus(status)
+      )}
     >
       <div className="flex justify-between items-start gap-2">
         <div>
@@ -31,17 +42,7 @@ export function TodoItem({
         <TodoAction />
       </div>
       <div className="flex justify-between items-center mt-2">
-        <Badge
-          variant={
-            priority === 'high'
-              ? 'destructive'
-              : priority === 'medium'
-              ? 'outline'
-              : 'default'
-          }
-        >
-          {priority}
-        </Badge>
+        <Badge variant={getPriorityVariant(priority)}>{priority}</Badge>
       </div>
     </div>
   );

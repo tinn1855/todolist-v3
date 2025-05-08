@@ -4,7 +4,7 @@
       "id": "1",
       "title": "Write project proposal",
       "description": "Draft the initial project proposal document.",
-      "status": "completed",
+      "status": "inprogress",
       "priority": "high"
     },
     {
@@ -25,7 +25,7 @@
       "id": "4",
       "title": "Implement login feature",
       "description": "Develop user authentication with JWT.",
-      "status": "inprogress",
+      "status": "incomplete",
       "priority": "high"
     },
     {
@@ -39,7 +39,7 @@
       "id": "6",
       "title": "Conduct code review",
       "description": "Review pull requests for the latest sprint.",
-      "status": "incomplete",
+      "status": "inprogress",
       "priority": "medium"
     },
     {
@@ -53,7 +53,7 @@
       "id": "8",
       "title": "Fix UI bugs",
       "description": "Resolve reported UI issues on the dashboard page.",
-      "status": "inprogress",
+      "status": "completed",
       "priority": "high"
     },
     {
