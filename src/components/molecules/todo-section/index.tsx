@@ -3,7 +3,7 @@ import { TodoItem } from '@/components/common/todo-item';
 import { TodoHeader } from '@/components/common/todo-header';
 import { cn } from '@/lib/utils';
 import type { Todo } from '@/hooks/use-todos';
-import { updateTodoStatus } from '@/hooks/use-update-todo';
+import { updateTodoStatus, useUpdateTodo } from '@/hooks/use-update-todo';
 
 interface TodoSectionProps {
   section: 'incomplete' | 'inprogress' | 'completed';
@@ -78,6 +78,20 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
   );
 
   const filteredTodos = todos.filter((todo) => todo.status === section);
+  const { updateTodo } = useUpdateTodo();
+
+  const handleUpdate = async (updated: Todo) => {
+    try {
+      const result = await updateTodo(updated);
+      if (result) {
+        setTodos((prev) =>
+          prev.map((todo) => (todo.id === result.id ? result : todo))
+        );
+      }
+    } catch (err) {
+      console.error('Failed to update todo:', err);
+    }
+  };
 
   return (
     <div
@@ -106,12 +120,7 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
                 onDragOver={(e) => handleDropOnItem(e, todo.id)}
                 className="cursor-grab hover:shadow-lg transition-shadow"
               >
-                <TodoItem
-                  title={todo.title}
-                  description={todo.description}
-                  priority={todo.priority}
-                  status={todo.status}
-                />
+                <TodoItem todo={todo} onUpdate={handleUpdate} />
               </div>
             ))}
       </div>

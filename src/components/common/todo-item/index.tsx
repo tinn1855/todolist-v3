@@ -1,27 +1,21 @@
 import { Badge } from '@/components/ui/badge';
 import { TodoAction } from '../todo-action';
 import { cn } from '@/lib/utils';
+import { Todo } from '@/hooks/use-todos';
 
 interface TodoItemProps {
-  title: string;
-  description: string;
-  priority: 'high' | 'medium' | 'low';
-  status: 'completed' | 'inprogress' | 'incomplete';
+  todo: Todo;
+  onUpdate: (updated: Todo) => void;
 }
 
-export function TodoItem({
-  title,
-  description,
-  priority,
-  status,
-}: TodoItemProps) {
-  const getPriorityVariant = (priority: TodoItemProps['priority']) => {
+export function TodoItem({ todo, onUpdate }: TodoItemProps) {
+  const getPriorityVariant = (priority: Todo['priority']) => {
     if (priority === 'high') return 'destructive';
     if (priority === 'medium') return 'outline';
     return 'default';
   };
 
-  const getBorderColorStatus = (status: TodoItemProps['status']) => {
+  const getBorderColorStatus = (status: Todo['status']) => {
     if (status === 'completed') return 'border-green-500';
     if (status === 'inprogress') return 'border-yellow-500';
     return 'border-red-500';
@@ -31,18 +25,20 @@ export function TodoItem({
     <div
       className={cn(
         'bg-white p-3 rounded-md border-l-4',
-        getBorderColorStatus(status)
+        getBorderColorStatus(todo.status)
       )}
     >
       <div className="flex justify-between items-start gap-2">
         <div>
-          <h3 className="font-medium">{title}</h3>
-          <p className="text-sm text-gray-600">{description}</p>
+          <h3 className="font-medium">{todo.title}</h3>
+          <p className="text-sm text-gray-600">{todo.description}</p>
         </div>
-        <TodoAction />
+        <TodoAction todo={todo} onUpdate={onUpdate} />
       </div>
       <div className="flex justify-between items-center mt-2">
-        <Badge variant={getPriorityVariant(priority)}>{priority}</Badge>
+        <Badge variant={getPriorityVariant(todo.priority)}>
+          {todo.priority}
+        </Badge>
       </div>
     </div>
   );
