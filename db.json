@@ -1,73 +1,73 @@
 {
   "todos": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Write project proposal",
       "description": "Draft the initial project proposal document.",
       "status": "incomplete",
       "priority": "high"
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Design homepage",
       "description": "Create wireframes for the main homepage layout.",
-      "status": "inprogress",
+      "status": "incomplete",
       "priority": "medium"
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Set up database",
       "description": "Initialize the MongoDB database and collections.",
-      "status": "completed",
+      "status": "inprogress",
       "priority": "high"
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Implement login feature",
       "description": "Develop user authentication with JWT.",
-      "status": "incomplete",
+      "status": "inprogress",
       "priority": "high"
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "Prepare presentation slides",
       "description": "Design slides for the team meeting next week.",
-      "status": "inprogress",
+      "status": "incomplete",
       "priority": "low"
     },
     {
-      "id": 6,
+      "id": "6",
       "title": "Conduct code review",
       "description": "Review pull requests for the latest sprint.",
       "status": "completed",
       "priority": "medium"
     },
     {
-      "id": 7,
+      "id": "7",
       "title": "Update project documentation",
       "description": "Add API details to the project README.",
-      "status": "incomplete",
+      "status": "inprogress",
       "priority": "low"
     },
     {
-      "id": 8,
+      "id": "8",
       "title": "Fix UI bugs",
       "description": "Resolve reported UI issues on the dashboard page.",
       "status": "inprogress",
       "priority": "high"
     },
     {
-      "id": 9,
+      "id": "9",
       "title": "Plan marketing strategy",
       "description": "Outline key points for the next marketing campaign.",
       "status": "completed",
       "priority": "medium"
     },
     {
-      "id": 10,
+      "id": "10",
       "title": "Optimize website performance",
       "description": "Improve loading times and reduce bundle size.",
-      "status": "incomplete",
+      "status": "completed",
       "priority": "high"
     }
   ]
