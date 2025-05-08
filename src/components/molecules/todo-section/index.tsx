@@ -96,22 +96,24 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
         <TodoHeader section={section} />
       </div>
       <div className="flex flex-col gap-2 mt-2">
-        {filteredTodos.map((todo) => (
-          <div
-            key={todo.id}
-            draggable
-            onDragStart={(e) => handleDragStart(e, todo.id)}
-            onDragOver={(e) => handleDropOnItem(e, todo.id)}
-            className="cursor-grab hover:shadow-lg transition-shadow"
-          >
-            <TodoItem
-              title={todo.title}
-              description={todo.description}
-              priority={todo.priority}
-              status={todo.status}
-            />
-          </div>
-        ))}
+        {filteredTodos.length === 0
+          ? 'No item'
+          : filteredTodos.map((todo) => (
+              <div
+                key={todo.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, todo.id)}
+                onDragOver={(e) => handleDropOnItem(e, todo.id)}
+                className="cursor-grab hover:shadow-lg transition-shadow"
+              >
+                <TodoItem
+                  title={todo.title}
+                  description={todo.description}
+                  priority={todo.priority}
+                  status={todo.status}
+                />
+              </div>
+            ))}
       </div>
     </div>
   );

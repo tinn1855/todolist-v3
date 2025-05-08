@@ -11,49 +11,49 @@
       "id": "2",
       "title": "Design homepage",
       "description": "Create wireframes for the main homepage layout.",
-      "status": "inprogress",
+      "status": "incomplete",
       "priority": "medium"
     },
     {
       "id": "3",
       "title": "Set up database",
       "description": "Initialize the MongoDB database and collections.",
-      "status": "completed",
+      "status": "incomplete",
       "priority": "high"
     },
     {
       "id": "4",
       "title": "Implement login feature",
       "description": "Develop user authentication with JWT.",
-      "status": "incomplete",
+      "status": "inprogress",
       "priority": "high"
     },
     {
       "id": "5",
       "title": "Prepare presentation slides",
       "description": "Design slides for the team meeting next week.",
-      "status": "completed",
+      "status": "incomplete",
       "priority": "low"
     },
     {
       "id": "6",
       "title": "Conduct code review",
       "description": "Review pull requests for the latest sprint.",
-      "status": "inprogress",
+      "status": "completed",
       "priority": "medium"
     },
     {
       "id": "7",
       "title": "Update project documentation",
       "description": "Add API details to the project README.",
-      "status": "incomplete",
+      "status": "completed",
       "priority": "low"
     },
     {
       "id": "8",
       "title": "Fix UI bugs",
       "description": "Resolve reported UI issues on the dashboard page.",
-      "status": "completed",
+      "status": "inprogress",
       "priority": "high"
     },
     {
