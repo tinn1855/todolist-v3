@@ -42,7 +42,7 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
       setTitle('');
       setDescription('');
       setPriority('medium');
-      onClose(); // Đóng dialog khi tạo todo thành công
+      onClose();
     } catch (err) {
       console.error('Failed to create todo:', err);
     }
@@ -80,7 +80,7 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex gap-2 justify-end">
+        <div>
           <Button type="submit" className="w-full">
             Add Todo
           </Button>
