@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLinkAPI } from './use-link-api';
 
 export interface Todo {
   id: string;
@@ -8,12 +9,12 @@ export interface Todo {
   priority: 'high' | 'medium' | 'low';
 }
 
-const URL_API = 'http://localhost:3000/todos';
-
 export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { URL_API } = useLinkAPI();
 
   useEffect(() => {
     fetchTodos();

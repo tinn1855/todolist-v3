@@ -60,14 +60,14 @@
       "id": "9",
       "title": "Plan marketing strategy",
       "description": "Outline key points for the next marketing campaign.",
-      "status": "incomplete",
+      "status": "inprogress",
       "priority": "medium"
     },
     {
       "id": "10",
       "title": "Optimize website performance",
       "description": "Improve loading times and reduce bundle size.",
-      "status": "inprogress",
+      "status": "completed",
       "priority": "high"
     }
   ]

@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Todo } from './use-todos';
-const URL_API = 'http://localhost:3000/todos';
+import { useLinkAPI } from './use-link-api';
+
+const URL_API = 'https://6800cae3b72e9cfaf728b9b1.mockapi.io/api/v2/todos';
 
 export async function updateTodoStatus(
   id: string,
   status: 'incomplete' | 'inprogress' | 'completed'
 ): Promise<Todo> {
   const res = await fetch(`${URL_API}/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -26,13 +28,15 @@ export function useUpdateTodo() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { URL_API } = useLinkAPI();
+
   const updateTodo = async (updatedTodo: Todo): Promise<Todo | null> => {
     setUpdating(true);
     setError(null);
 
     try {
       const res = await fetch(`${URL_API}/${updatedTodo.id}`, {
-        method: 'PUT', // hoặc PATCH nếu bạn chỉ update một phần
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },

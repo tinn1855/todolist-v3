@@ -6,10 +6,8 @@ export function TemplateDefault() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
-        <SidebarTrigger />
-        <Outlet></Outlet>
-      </main>
+      <SidebarTrigger />
+      <Outlet></Outlet>
     </SidebarProvider>
   );
 }
