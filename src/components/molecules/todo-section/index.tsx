@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 import { TodoItem } from '@/components/common/todo-item';
 import { TodoHeader } from '@/components/common/todo-header';
 import { cn } from '@/lib/utils';
-import type { Todo } from '@/hooks/use-todos';
 import { updateTodoStatus, useUpdateTodo } from '@/hooks/use-update-todo';
+import { Todo } from '@/hooks/use-todos';
 
 interface TodoSectionProps {
   section: 'incomplete' | 'inprogress' | 'completed';

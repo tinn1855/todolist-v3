@@ -41,5 +41,6 @@ export function useTodos() {
     setTodos,
     loading,
     error,
+    fetchTodos, // Đảm bảo fetch lại todos
   };
 }
