@@ -9,12 +9,6 @@ interface TodoItemProps {
 }
 
 export function TodoItem({ todo, onUpdate }: TodoItemProps) {
-  // const getPriorityVariant = (priority: Todo['priority']) => {
-  //   if (priority === 'high') return 'destructive';
-  //   if (priority === 'medium') return 'outline';
-  //   return 'default';
-  // };
-
   const getPriorityVariant = {
     high: 'destructive',
     medium: 'outline',
