@@ -1,6 +1,6 @@
 // src/context/TodosContext.tsx
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Todo } from '@/hooks/use-todos'; // hoặc copy lại interface
+import { Todo } from '@/hooks/use-todos';
 import { useLinkAPI } from './use-link-api';
 
 interface TodosContextType {

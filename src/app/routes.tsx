@@ -2,7 +2,7 @@ import { DesignSystem } from '@/components/design-system';
 import { Home } from '@/components/pages/home';
 import { Login } from '@/components/pages/login';
 import { Register } from '@/components/pages/register';
-import { TemplateDefault } from '@/components/templates/default';
+import { TemplateDefault } from '@/components/layout/default';
 import { Route, Routes } from 'react-router-dom';
 
 export function AppRoutes() {

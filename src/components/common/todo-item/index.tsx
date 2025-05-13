@@ -9,23 +9,29 @@ interface TodoItemProps {
 }
 
 export function TodoItem({ todo, onUpdate }: TodoItemProps) {
-  const getPriorityVariant = (priority: Todo['priority']) => {
-    if (priority === 'high') return 'destructive';
-    if (priority === 'medium') return 'outline';
-    return 'default';
-  };
+  // const getPriorityVariant = (priority: Todo['priority']) => {
+  //   if (priority === 'high') return 'destructive';
+  //   if (priority === 'medium') return 'outline';
+  //   return 'default';
+  // };
 
-  const getBorderColorStatus = (status: Todo['status']) => {
-    if (status === 'completed') return 'border-green-500';
-    if (status === 'inprogress') return 'border-yellow-500';
-    return 'border-red-500';
+  const getPriorityVariant = {
+    high: 'destructive',
+    medium: 'outline',
+    low: 'default',
+  } as const;
+
+  const getBorderColorStatus = {
+    completed: 'border-green-500',
+    inprogress: 'border-yellow-500',
+    incomplete: 'border-red-500',
   };
 
   return (
     <div
       className={cn(
         'bg-white p-3 rounded-md border-l-4',
-        getBorderColorStatus(todo.status)
+        getBorderColorStatus[todo.status]
       )}
     >
       <div className="flex justify-between items-start gap-2">
@@ -36,7 +42,7 @@ export function TodoItem({ todo, onUpdate }: TodoItemProps) {
         <TodoAction todo={todo} onUpdate={onUpdate} />
       </div>
       <div className="flex justify-between items-center mt-2">
-        <Badge variant={getPriorityVariant(todo.priority)}>
+        <Badge variant={getPriorityVariant[todo.priority]}>
           {todo.priority}
         </Badge>
       </div>
