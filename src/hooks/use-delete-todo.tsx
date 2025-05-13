@@ -1,10 +1,9 @@
 // hooks/use-delete-todo.tsx
 import { useState } from 'react';
-import { useLinkAPI } from './use-link-api';
+import { URL_API } from '@/constants/baseURL';
 
 export function useDeleteTodo() {
   const [loading, setLoading] = useState(false);
-  const { URL_API } = useLinkAPI();
 
   const deleteTodoById = async (id: string) => {
     setLoading(true);

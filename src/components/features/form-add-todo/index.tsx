@@ -13,20 +13,18 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { createTodo } from '@/hooks/use-create-todo';
-import { useTodos } from '@/hooks/todo-context';
+import { useTodos } from '@/context/todo-context';
+import { Todo } from '@/hooks/use-todos';
 interface AddTodoFormProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onClose: () => void;
+  todo: Todo;
 }
 
-export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
+export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
   const { setTodos } = useTodos();
 
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    priority: 'medium' as 'low' | 'medium' | 'high',
-  });
+  const [form, setForm] = useState({ ...todo });
 
   const handleChange = (field: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -45,7 +43,7 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
     try {
       const created = await createTodo(newTodo);
       setTodos((prev) => [created, ...prev]);
-      setForm({ title: '', description: '', priority: 'medium' });
+      setForm({ ...todo });
       onClose();
     } catch (err) {
       console.error('Failed to create todo:', err);

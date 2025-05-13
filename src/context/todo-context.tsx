@@ -1,7 +1,7 @@
 // src/context/TodosContext.tsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Todo } from '@/hooks/use-todos';
-import { useLinkAPI } from './use-link-api';
+import { URL_API } from '@/constants/baseURL';
 
 interface TodosContextType {
   todos: Todo[];
@@ -13,7 +13,6 @@ const TodosContext = createContext<TodosContextType | undefined>(undefined);
 
 export function TodosProvider({ children }: { children: React.ReactNode }) {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const { URL_API } = useLinkAPI();
 
   const fetchTodos = async () => {
     try {

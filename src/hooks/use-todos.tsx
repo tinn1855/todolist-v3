@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLinkAPI } from './use-link-api';
+import { URL_API } from '@/constants/baseURL';
 
 export interface Todo {
   id: string;
@@ -13,8 +13,6 @@ export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const { URL_API } = useLinkAPI();
 
   useEffect(() => {
     fetchTodos();
@@ -41,6 +39,6 @@ export function useTodos() {
     setTodos,
     loading,
     error,
-    fetchTodos, // Đảm bảo fetch lại todos
+    fetchTodos,
   };
 }

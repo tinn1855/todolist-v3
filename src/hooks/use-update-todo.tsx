@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Todo } from './use-todos';
-import { useLinkAPI } from './use-link-api';
-
-const URL_API = 'https://6800cae3b72e9cfaf728b9b1.mockapi.io/api/v2/todos';
+import { URL_API } from '@/constants/baseURL';
 
 export async function updateTodoStatus(
   id: string,
@@ -27,8 +25,6 @@ export async function updateTodoStatus(
 export function useUpdateTodo() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const { URL_API } = useLinkAPI();
 
   const updateTodo = async (updatedTodo: Todo): Promise<Todo | null> => {
     setUpdating(true);

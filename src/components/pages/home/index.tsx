@@ -1,5 +1,5 @@
 import { TodoSection } from '@/components/molecules/todo-section';
-import { useTodos } from '@/hooks/todo-context';
+import { useTodos } from '@/context/todo-context';
 
 export function Home() {
   const { todos, setTodos } = useTodos();

@@ -1,7 +1,7 @@
 import { DeleteTodoDialog } from '@/components/features/delete-todo';
 import { EditTodoDialog } from '@/components/features/edit-todo';
 import { Button } from '@/components/ui/button';
-import { useTodos } from '@/hooks/todo-context';
+import { useTodos } from '@/context/todo-context';
 import { useDeleteTodo } from '@/hooks/use-delete-todo';
 import { Todo } from '@/hooks/use-todos';
 import { SquarePen, Trash2 } from 'lucide-react';
@@ -15,7 +15,7 @@ interface TodoActionProps {
 export function TodoAction({ todo, onUpdate }: TodoActionProps) {
   const [open, setOpen] = useState(false);
   const { setTodos } = useTodos();
-  const { deleteTodoById, loading } = useDeleteTodo();
+  const { deleteTodoById } = useDeleteTodo();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 

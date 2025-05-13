@@ -1,6 +1,5 @@
 import { Todo } from './use-todos';
-
-const URL_API = 'https://6800cae3b72e9cfaf728b9b1.mockapi.io/api/v2/todos';
+import { URL_API } from '@/constants/baseURL';
 
 export async function createTodo(newTodo: Omit<Todo, 'id'>): Promise<Todo> {
   const res = await fetch(URL_API, {
