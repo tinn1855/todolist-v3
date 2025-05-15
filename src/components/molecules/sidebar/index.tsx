@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useNavigate } from 'react-router-dom';
 
 // Menu items.
 const items = [
@@ -61,10 +62,17 @@ const items = [
 
 export function AppSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleToggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    navigate('login');
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -129,8 +137,8 @@ export function AppSidebar() {
                 <DropdownMenuItem>
                   <span>Billing</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

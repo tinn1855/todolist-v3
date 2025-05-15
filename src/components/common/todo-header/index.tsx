@@ -34,7 +34,7 @@ export function TodoHeader({ section, onDeleteAllTodo }: TodoHeaderProps) {
         </Dialog>
 
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
               <Ellipsis />
             </Button>

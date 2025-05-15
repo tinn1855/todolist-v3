@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { useUsers } from '@/hooks/use-users';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface LoginForm {
   username: string;
@@ -16,6 +16,13 @@ export function FormLogin() {
   const { users } = useUsers();
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      navigate('/');
+    }
+  });
 
   const onSubmit = (data: LoginForm) => {
     const foundUser = users.find(
