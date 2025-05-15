@@ -70,5 +70,31 @@
       "status": "completed",
       "priority": "high"
     }
+  ],
+  "user": [
+    {
+      "id": "1",
+      "username": "tinn1855",
+      "email": "tinn1855@gmail.com",
+      "password": "123",
+      "role": "user",
+      "fullName": "Tin Nguyen"
+    },
+    {
+      "id": "2",
+      "username": "example",
+      "email": "example@gmail.com",
+      "password": "123",
+      "role": "user",
+      "fullName": "Example"
+    },
+    {
+      "id": "3",
+      "username": "admin",
+      "email": "admin@gmail.com",
+      "password": "123",
+      "role": "admin",
+      "fullName": "Admin"
+    }
   ]
 }
