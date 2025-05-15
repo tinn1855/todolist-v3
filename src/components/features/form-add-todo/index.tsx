@@ -23,7 +23,6 @@ interface AddTodoFormProps {
 
 export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
   const { setTodos } = useTodos();
-
   const [form, setForm] = useState({ ...todo });
 
   const handleChange = (field: keyof typeof form, value: string) => {

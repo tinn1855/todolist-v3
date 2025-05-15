@@ -4,6 +4,7 @@ import { TodoHeader } from '@/components/common/todo-header';
 import { cn } from '@/lib/utils';
 import { updateTodoStatus, useUpdateTodo } from '@/hooks/use-update-todo';
 import { Todo } from '@/hooks/use-todos';
+import { useDeleteMultipleTodos } from '@/hooks/use-delete-multi-todo';
 
 interface TodoSectionProps {
   section: 'incomplete' | 'inprogress' | 'completed';
@@ -92,6 +93,26 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
       console.error('Failed to update todo:', err);
     }
   };
+  const { deleteMultiTodo } = useDeleteMultipleTodos();
+
+  const handleDeleteAllTodo = async () => {
+    const idsTodoDelete = todos
+      .filter((todo) => todo.status === section)
+      .map((todo) => todo.id);
+
+    if (idsTodoDelete.length === 0) return;
+    console.log(idsTodoDelete);
+
+    try {
+      await deleteMultiTodo(idsTodoDelete);
+      setTodos((prev) =>
+        prev.filter((todo) => !idsTodoDelete.includes(todo.id))
+      );
+      console.log('Todo deleted:', idsTodoDelete);
+    } catch (error) {
+      console.error('Delete fail:', error);
+    }
+  };
 
   return (
     <div
@@ -107,7 +128,7 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
             'bg-red-500': section === 'incomplete',
           })}
         />
-        <TodoHeader section={section} />
+        <TodoHeader section={section} onDeleteAllTodo={handleDeleteAllTodo} />
       </div>
       <div className="flex flex-col gap-2 mt-2">
         {filteredTodos.length === 0

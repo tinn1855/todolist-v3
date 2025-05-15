@@ -1,15 +1,22 @@
 // TodoHeader.tsx
 import { Button } from '@/components/ui/button';
-import { Ellipsis, Plus } from 'lucide-react';
+import { Ellipsis, Plus, SquareCheckBig, Trash2 } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { AddTodoForm } from '@/components/features/form-add-todo';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface TodoHeaderProps {
   section: 'incomplete' | 'inprogress' | 'completed';
+  onDeleteAllTodo: () => void;
 }
 
-export function TodoHeader({ section }: TodoHeaderProps) {
+export function TodoHeader({ section, onDeleteAllTodo }: TodoHeaderProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,9 +32,22 @@ export function TodoHeader({ section }: TodoHeaderProps) {
           </DialogTrigger>
           <AddTodoForm section={section} onClose={() => setOpen(false)} />
         </Dialog>
-        <Button variant="outline" size="icon">
-          <Ellipsis />
-        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant="outline" size="icon">
+              <Ellipsis />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <SquareCheckBig /> Mark All Completed
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDeleteAllTodo}>
+              <Trash2 /> Delete All
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
