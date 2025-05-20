@@ -7,6 +7,7 @@ export interface Todo {
   description: string;
   status: 'incomplete' | 'inprogress' | 'completed';
   priority: 'high' | 'medium' | 'low';
+  userId: string;
 }
 
 export function useTodos() {
@@ -14,14 +15,10 @@ export function useTodos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  const fetchTodos = async () => {
+  const fetchTodos = async (userId: string) => {
     setLoading(true);
     try {
-      const res = await fetch(URL_API);
+      const res = await fetch(`${URL_API}?userId=${userId}`);
       if (!res.ok) {
         throw new Error('Failed to fetch todos');
       }
@@ -33,6 +30,15 @@ export function useTodos() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (!user) return;
+    const currentUser = JSON.parse(user);
+    if (currentUser?.id) {
+      fetchTodos(currentUser.id);
+    }
+  }, []);
 
   return {
     todos,

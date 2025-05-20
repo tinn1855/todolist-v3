@@ -25,6 +25,9 @@ export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
   const { setTodos } = useTodos();
   const [form, setForm] = useState({ ...todo });
 
+  const userId = localStorage.getItem('user');
+  console.log(userId);
+
   const handleChange = (field: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -37,6 +40,7 @@ export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
       description: form.description,
       priority: form.priority,
       status: section,
+      userId: userId,
     };
 
     try {
@@ -72,7 +76,7 @@ export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
         <div>
           <Label>Priority</Label>
           <Select
-            value={form.priority}
+            value={form.priority || 'medium'}
             onValueChange={(v) => handleChange('priority', v)}
           >
             <SelectTrigger>
