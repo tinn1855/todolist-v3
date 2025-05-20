@@ -14,9 +14,14 @@ import {
 interface TodoHeaderProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onDeleteAllTodo: () => void;
+  onMarkAllCompleted: () => void;
 }
 
-export function TodoHeader({ section, onDeleteAllTodo }: TodoHeaderProps) {
+export function TodoHeader({
+  section,
+  onDeleteAllTodo,
+  onMarkAllCompleted,
+}: TodoHeaderProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,9 +45,12 @@ export function TodoHeader({ section, onDeleteAllTodo }: TodoHeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
-              <SquareCheckBig /> Mark All Completed
-            </DropdownMenuItem>
+            {['incomplete', 'inprogress'].includes(section) &&
+              onMarkAllCompleted && (
+                <DropdownMenuItem onClick={onMarkAllCompleted}>
+                  <SquareCheckBig /> Mark All Completed
+                </DropdownMenuItem>
+              )}
             <DropdownMenuItem onClick={onDeleteAllTodo}>
               <Trash2 /> Delete All
             </DropdownMenuItem>

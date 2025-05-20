@@ -114,6 +114,29 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
     }
   };
 
+  const handleMarkAllCompleted = async () => {
+    const idsToUpdate = todos
+      .filter((todo) => todo.status === section)
+      .map((todo) => todo.id);
+
+    if (idsToUpdate.length === 0) return;
+
+    try {
+      const updatedTodos = await Promise.all(
+        idsToUpdate.map((id) => updateTodoStatus(id, 'completed'))
+      );
+
+      setTodos((prev) =>
+        prev.map((todo) => {
+          const updated = updatedTodos.find((t) => t.id === todo.id);
+          return updated ?? todo;
+        })
+      );
+    } catch (error) {
+      console.error('Failed to mark all completed:', error);
+    }
+  };
+
   return (
     <div
       onDrop={handleDrop}
@@ -128,7 +151,11 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
             'bg-red-500': section === 'incomplete',
           })}
         />
-        <TodoHeader section={section} onDeleteAllTodo={handleDeleteAllTodo} />
+        <TodoHeader
+          section={section}
+          onDeleteAllTodo={handleDeleteAllTodo}
+          onMarkAllCompleted={handleMarkAllCompleted}
+        />
       </div>
       <div className="flex flex-col gap-2 mt-2">
         {filteredTodos.length === 0
