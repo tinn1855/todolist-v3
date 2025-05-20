@@ -18,35 +18,53 @@ import { Todo } from '@/hooks/use-todos';
 interface AddTodoFormProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onClose: () => void;
-  todo: Todo;
 }
 
-export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
+export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
   const { setTodos } = useTodos();
-  const [form, setForm] = useState({ ...todo });
 
-  const userId = localStorage.getItem('user');
-  console.log(userId);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userId = user.id;
+
+  const [form, setForm] = useState<Omit<Todo, 'id'>>({
+    title: '',
+    description: '',
+    priority: 'medium',
+    status: section,
+    userId: userId ?? '',
+  });
+
+  if (!user || !user.id) {
+    console.log('User not found');
+    return (
+      <DialogContent>
+        <DialogTitle>Error</DialogTitle>
+        <p className="text-red-500">User ID is missing. Please log in again.</p>
+      </DialogContent>
+    );
+  }
 
   const handleChange = (field: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const resetForm = () => {
+    setForm({
+      title: '',
+      description: '',
+      priority: 'medium',
+      status: section,
+      userId: userId,
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newTodo = {
-      title: form.title,
-      description: form.description,
-      priority: form.priority,
-      status: section,
-      userId: userId,
-    };
-
     try {
-      const created = await createTodo(newTodo);
+      const created = await createTodo(form);
       setTodos((prev) => [created, ...prev]);
-      setForm({ ...todo });
+      resetForm();
       onClose();
     } catch (err) {
       console.error('Failed to create todo:', err);
@@ -76,7 +94,7 @@ export function AddTodoForm({ section, onClose, todo }: AddTodoFormProps) {
         <div>
           <Label>Priority</Label>
           <Select
-            value={form.priority || 'medium'}
+            value={form.priority}
             onValueChange={(v) => handleChange('priority', v)}
           >
             <SelectTrigger>

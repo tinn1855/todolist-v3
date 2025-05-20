@@ -73,6 +73,8 @@ export function AppSidebar() {
     navigate('login');
   };
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -87,7 +89,7 @@ export function AppSidebar() {
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <h3 className="font-medium">Tin Nguyen</h3>
+              <h3 className="font-medium">{user.fullName}</h3>
             </div>
             <SidebarTrigger
               className={`flex duration-300 ease-in-out ${
@@ -123,7 +125,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> tinn1855@gmail.com
+                  <User2 /> {user.email}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
