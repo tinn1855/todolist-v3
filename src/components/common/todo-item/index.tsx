@@ -21,6 +21,12 @@ export function TodoItem({ todo, onUpdate }: TodoItemProps) {
     incomplete: 'border-red-500',
   };
 
+  const getPriorityClass = {
+    high: ' dark:bg-red-500 dark:text-white',
+    medium: 'dark:border-gray-500 dark:text-gray-800',
+    low: 'dark:bg-black dark:text-white',
+  };
+
   return (
     <div
       className={cn(
@@ -38,7 +44,7 @@ export function TodoItem({ todo, onUpdate }: TodoItemProps) {
       <div className="flex justify-between items-center mt-2 ">
         <Badge
           variant={getPriorityVariant[todo.priority]}
-          className="dark:text-black"
+          className={getPriorityClass[todo.priority]}
         >
           {todo.priority}
         </Badge>
