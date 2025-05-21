@@ -22,7 +22,7 @@ export function TodoItem({ todo, onUpdate }: TodoItemProps) {
   };
 
   const getPriorityClass = {
-    high: ' dark:bg-red-500 dark:text-white',
+    high: ' dark:bg-red-900 dark:text-white',
     medium: 'dark:border-gray-500 dark:text-gray-800',
     low: 'dark:bg-black dark:text-white',
   };
