@@ -141,7 +141,7 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
     <div
       onDrop={handleDrop}
       onDragOver={handleDragOver}
-      className="bg-gray-100 rounded-md p-4 m-2 overflow-y-auto h-screen min-w-[300px]"
+      className="bg-gray-100 rounded-md p-4 m-2 overflow-y-auto h-screen min-w-[300px] "
     >
       <div className="flex items-center gap-2">
         <span

@@ -30,13 +30,16 @@ export function TodoItem({ todo, onUpdate }: TodoItemProps) {
     >
       <div className="flex justify-between items-start gap-2">
         <div>
-          <h3 className="font-medium">{todo.title}</h3>
+          <h3 className="font-medium dark:text-black">{todo.title}</h3>
           <p className="text-sm text-gray-600">{todo.description}</p>
         </div>
         <TodoAction todo={todo} onUpdate={onUpdate} />
       </div>
-      <div className="flex justify-between items-center mt-2">
-        <Badge variant={getPriorityVariant[todo.priority]}>
+      <div className="flex justify-between items-center mt-2 ">
+        <Badge
+          variant={getPriorityVariant[todo.priority]}
+          className="dark:text-black"
+        >
           {todo.priority}
         </Badge>
       </div>

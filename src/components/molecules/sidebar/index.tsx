@@ -30,6 +30,7 @@ import {
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNavigate } from 'react-router-dom';
+import { ToggleTheme } from '@/components/features/toggle-theme';
 
 // Menu items.
 const items = [
@@ -120,6 +121,9 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <SidebarContent>
+          <ToggleTheme />
+        </SidebarContent>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
