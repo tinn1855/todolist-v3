@@ -10,24 +10,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { DeleteMultipleTodoDialog } from '@/components/features/delete-multiple-todo';
+import { Todo } from '@/hooks/use-todos';
 
 interface TodoHeaderProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onDeleteAllTodo: () => void;
   onMarkAllCompleted: () => void;
+  todo: Todo;
 }
 
 export function TodoHeader({
   section,
   onDeleteAllTodo,
   onMarkAllCompleted,
+  todo,
 }: TodoHeaderProps) {
   const [open, setOpen] = useState(false);
+
+  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
 
   return (
     <div className="flex justify-between w-full items-center text-gray-500">
       <h2 className="font-medium capitalize">{section}</h2>
-
       <div className="flex gap-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -37,7 +42,6 @@ export function TodoHeader({
           </DialogTrigger>
           <AddTodoForm section={section} onClose={() => setOpen(false)} />
         </Dialog>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
@@ -51,12 +55,20 @@ export function TodoHeader({
                   <SquareCheckBig /> Mark All Completed
                 </DropdownMenuItem>
               )}
-            <DropdownMenuItem onClick={onDeleteAllTodo}>
+            <DropdownMenuItem onClick={() => setIsDeleteAllDialogOpen(true)}>
               <Trash2 /> Delete All
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <DeleteMultipleTodoDialog
+        open={isDeleteAllDialogOpen}
+        todo={todo}
+        onOpenChange={setIsDeleteAllDialogOpen}
+        onDeleteMultiple={() => {
+          onDeleteAllTodo();
+        }}
+      />
     </div>
   );
 }
