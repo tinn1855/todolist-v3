@@ -15,6 +15,7 @@ import {
 import { createTodo } from '@/hooks/use-create-todo';
 import { useTodos } from '@/context/todo-context';
 import { Todo } from '@/hooks/use-todos';
+import { toast } from 'sonner';
 interface AddTodoFormProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onClose: () => void;
@@ -69,6 +70,7 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
     } catch (err) {
       console.error('Failed to create todo:', err);
     }
+    toast.success('Created todo successfully');
   };
 
   return (

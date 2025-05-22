@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Todo } from '@/hooks/use-todos';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface deleteTodoDialogProps {
   open: boolean;
@@ -32,12 +33,13 @@ export function DeleteTodoDialog({
       console.error('Failed to delete todo:', err);
       setLoading(false);
     }
+    toast.success('Deleted successfully');
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogTitle>Confirm Delete</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">

@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Todo } from '@/hooks/use-todos';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface EditTodoDialogProps {
   open: boolean;
@@ -40,7 +41,9 @@ export function EditTodoDialog({
   const handleSubmit = () => {
     onSave(form);
     onOpenChange(false);
+    toast.success('Edit successfully');
   };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
