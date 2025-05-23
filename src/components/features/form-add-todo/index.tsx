@@ -1,7 +1,11 @@
 // AddTodoForm.tsx
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -40,7 +44,9 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
     return (
       <DialogContent>
         <DialogTitle>Error</DialogTitle>
-        <p className="text-red-500">User ID is missing. Please log in again.</p>
+        <DialogDescription>
+          User ID is missing. Please log in again
+        </DialogDescription>
       </DialogContent>
     );
   }

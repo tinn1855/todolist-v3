@@ -30,7 +30,7 @@ export function FormLogin() {
     );
 
     if (!foundUser) {
-      setError('Sai tên đăng nhập hoặc mật khẩu');
+      setError('Invalid username or password. Please try again!');
       return;
     }
 
