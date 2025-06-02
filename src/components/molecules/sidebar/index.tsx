@@ -21,59 +21,49 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNavigate } from 'react-router-dom';
 import { ToggleTheme } from '@/components/features/toggle-theme';
+import { useLogout } from '@/hooks/use-logout';
 
-// Menu items.
 const items = [
-  {
-    title: 'Home',
-    url: '/',
-    icon: Home,
-  },
-  {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
-  },
+  { title: 'Home', url: '/', icon: Home },
+  { title: 'Inbox', url: '#', icon: Inbox },
+  { title: 'Calendar', url: '#', icon: Calendar },
+  { title: 'Search', url: '#', icon: Search },
+  { title: 'Settings', url: '#', icon: Settings },
 ];
 
 export function AppSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Dùng hook logout
+  const { logout, loading, error } = useLogout();
+
   const handleToggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem('user');
-    navigate('login');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch {
+      alert(error || 'Logout failed, please try again');
+    }
   };
 
+  // Lấy user từ localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   return (
@@ -84,13 +74,13 @@ export function AppSidebar() {
             <div
               className={`flex gap-2 items-center ${
                 isOpen ? 'hidden' : 'block'
-              } `}
+              }`}
             >
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <h3 className="font-medium">{user.fullName}</h3>
+              <h3 className="font-medium">{user.fullName || user.full_name}</h3>
             </div>
             <SidebarTrigger
               className={`flex duration-300 ease-in-out ${
@@ -101,6 +91,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -120,6 +111,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarContent>
           <ToggleTheme />
@@ -143,8 +135,12 @@ export function AppSidebar() {
                 <DropdownMenuItem>
                   <span>Billing</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  Sign out
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  disabled={loading}
+                  className={loading ? 'opacity-50 cursor-not-allowed' : ''}
+                >
+                  {loading ? 'Logging out...' : 'Sign out'}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
