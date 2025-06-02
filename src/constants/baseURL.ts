@@ -1,7 +1,7 @@
 export const URL_API =
-  'https://6800cae3b72e9cfaf728b9b1.mockapi.io/api/v2/todos';
+  'https://todolist-v4-production.up.railway.app/api/todos';
 
 export const GET_USER_API =
-  'https://6800cae3b72e9cfaf728b9b1.mockapi.io/api/v2/users';
+  'https://todolist-v4-production.up.railway.app/api/users';
 
-export const BASE_URL = 'https://6800cae3b72e9cfaf728b9b1.mockapi.io/api/v2/';
+export const BASE_URL = 'https://todolist-v4-production.up.railway.app/api';

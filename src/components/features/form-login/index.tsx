@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
-import { useUsers } from '@/hooks/use-users';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useLogin } from '@/hooks/use-login';
 
 interface LoginForm {
   username: string;
@@ -13,8 +13,7 @@ interface LoginForm {
 
 export function FormLogin() {
   const { register, handleSubmit } = useForm<LoginForm>();
-  const { users } = useUsers();
-  const [error, setError] = useState('');
+  const { login, loading, error } = useLogin();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,18 +23,13 @@ export function FormLogin() {
     }
   });
 
-  const onSubmit = (data: LoginForm) => {
-    const foundUser = users.find(
-      (u) => u.username === data.username && u.password === data.password
-    );
-
-    if (!foundUser) {
-      setError('Invalid username or password. Please try again!');
-      return;
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      await login(data.username, data.password);
+      navigate('/');
+    } catch {
+      // error state đã được set trong hook
     }
-
-    localStorage.setItem('user', JSON.stringify(foundUser));
-    navigate('/');
   };
 
   return (
@@ -60,8 +54,8 @@ export function FormLogin() {
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <div>
-        <Button type="submit" className="w-full">
-          Login
+        <Button disabled={loading} type="submit" className="w-full">
+          {loading ? 'Logging in...' : 'Login'}
         </Button>
       </div>
     </form>
