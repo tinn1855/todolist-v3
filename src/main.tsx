@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom/client';
 import App from './app/app';
 import { TodosProvider } from './context/todo-context';
 import { Toaster } from 'sonner';
+import { AuthProvider } from './context/auth-context';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,10 +13,12 @@ const root = ReactDOM.createRoot(
 root.render(
   // <StrictMode>
   <BrowserRouter>
-    <TodosProvider>
-      <App />
-      <Toaster richColors />
-    </TodosProvider>
+    <AuthProvider>
+      <TodosProvider>
+        <App />
+        <Toaster richColors />
+      </TodosProvider>
+    </AuthProvider>
   </BrowserRouter>
   // </StrictMode>
 );

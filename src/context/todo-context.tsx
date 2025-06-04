@@ -1,7 +1,13 @@
-// src/context/TodosContext.tsx
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 import { Todo } from '@/hooks/use-todos';
-import { URL_API } from '@/constants/baseURL';
+import { BASE_URL } from '@/constants/baseURL';
+import { useAuth } from './auth-context'; // nhớ thay đúng đường dẫn
 
 interface TodosContextType {
   todos: Todo[];
@@ -12,21 +18,49 @@ interface TodosContextType {
 const TodosContext = createContext<TodosContextType | undefined>(undefined);
 
 export function TodosProvider({ children }: { children: React.ReactNode }) {
+  const { token } = useAuth(); // lấy token từ context auth
   const [todos, setTodos] = useState<Todo[]>([]);
 
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
+    if (!token) {
+      setTodos([]);
+      return;
+    }
+
     try {
-      const res = await fetch(URL_API);
-      const data = await res.json();
-      setTodos(data.sort((a: any, b: any) => b.id.localeCompare(a.id))); // Todo mới nhất lên đầu
+      const res = await fetch(`${BASE_URL}/todos`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          console.warn('Unauthorized. Token may be invalid.');
+          setTodos([]);
+          return;
+        }
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const result = await res.json();
+
+      if (!result.data || !Array.isArray(result.data)) {
+        throw new Error('Invalid data format from server');
+      }
+
+      const sorted = [...result.data].sort((a: any, b: any) => b.id - a.id);
+      setTodos(sorted);
     } catch (err) {
       console.error('Failed to fetch todos:', err);
+      setTodos([]);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [fetchTodos]);
 
   return (
     <TodosContext.Provider value={{ todos, setTodos, fetchTodos }}>

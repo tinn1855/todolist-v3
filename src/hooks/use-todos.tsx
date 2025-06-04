@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { URL_API } from '@/constants/baseURL';
+import { BASE_URL } from '@/constants/baseURL';
+import { useAuth } from '@/context/auth-context';
 
 export interface Todo {
   id: string;
@@ -11,40 +12,52 @@ export interface Todo {
 }
 
 export function useTodos() {
+  const { token } = useAuth();
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTodos = async (userId: string) => {
+  const fetchTodos = async () => {
+    if (!token) {
+      setTodos([]);
+      setError('No auth token');
+      return;
+    }
+
     setLoading(true);
+    setError(null);
+
     try {
-      const res = await fetch(`${URL_API}?userId=${userId}`);
+      const res = await fetch(`${BASE_URL}/todos`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (!res.ok) {
         throw new Error('Failed to fetch todos');
       }
+
       const data: Todo[] = await res.json();
       setTodos(data);
     } catch (err: any) {
       setError(err.message || 'Unknown error');
+      setTodos([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (!user) return;
-    const currentUser = JSON.parse(user);
-    if (currentUser?.id) {
-      fetchTodos(currentUser.id);
+    if (token) {
+      fetchTodos();
+    } else {
+      setTodos([]);
+      setError(null);
+      setLoading(false);
     }
-  }, []);
+  }, [token]);
 
-  return {
-    todos,
-    setTodos,
-    loading,
-    error,
-    fetchTodos,
-  };
+  return { todos, setTodos, loading, error, fetchTodos };
 }
