@@ -20,6 +20,7 @@ export function useLogin() {
         body: JSON.stringify({ username, password }),
       });
       const data = await res.json();
+      console.log(data);
 
       if (!res.ok || !data.success) {
         throw new Error(data.message || 'Invalid credentials');

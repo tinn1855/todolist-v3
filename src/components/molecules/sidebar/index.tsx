@@ -65,6 +65,7 @@ export function AppSidebar() {
 
   // Lấy user từ localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  console.log(user.full_name);
 
   return (
     <Sidebar collapsible="icon">
@@ -80,7 +81,9 @@ export function AppSidebar() {
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <h3 className="font-medium">{user.fullName || user.full_name}</h3>
+              <h3 className="font-medium">
+                {user.full_name || 'Không có tên'}
+              </h3>
             </div>
             <SidebarTrigger
               className={`flex duration-300 ease-in-out ${
