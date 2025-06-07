@@ -1,4 +1,3 @@
-// AddTodoForm.tsx
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +19,8 @@ import { createTodo } from '@/hooks/use-create-todo';
 import { useTodos } from '@/context/todo-context';
 import { Todo } from '@/hooks/use-todos';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/auth-context';
+
 interface AddTodoFormProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onClose: () => void;
@@ -30,13 +31,13 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const userId = user.id;
+  const { token } = useAuth();
 
-  const [form, setForm] = useState<Omit<Todo, 'id'>>({
+  const [form, setForm] = useState<Omit<Todo, 'id' | 'userId'>>({
     title: '',
     description: '',
     priority: 'medium',
     status: section,
-    userId: userId ?? '',
   });
 
   if (!user || !user.id) {
@@ -61,7 +62,6 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
       description: '',
       priority: 'medium',
       status: section,
-      userId: userId,
     });
   };
 
@@ -69,14 +69,20 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
     e.preventDefault();
 
     try {
-      const created = await createTodo(form);
+      const payload = {
+        ...form,
+        userId: userId,
+      };
+      console.log(form);
+
+      const created = await createTodo(payload, token as string);
       setTodos((prev) => [created, ...prev]);
       resetForm();
       onClose();
+      toast.success('Created todo successfully');
     } catch (err) {
-      console.error('Failed to create todo:', err);
+      toast.error('Failed to create todo');
     }
-    toast.success('Created todo successfully');
   };
 
   return (

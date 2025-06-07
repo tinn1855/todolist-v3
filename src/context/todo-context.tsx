@@ -7,19 +7,21 @@ import {
 } from 'react';
 import { Todo } from '@/hooks/use-todos';
 import { BASE_URL } from '@/constants/baseURL';
-import { useAuth } from './auth-context'; // nhớ thay đúng đường dẫn
+import { useAuth } from './auth-context';
 
 interface TodosContextType {
   todos: Todo[];
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   fetchTodos: () => Promise<void>;
+  loading: boolean;
 }
 
 const TodosContext = createContext<TodosContextType | undefined>(undefined);
 
 export function TodosProvider({ children }: { children: React.ReactNode }) {
-  const { token } = useAuth(); // lấy token từ context auth
+  const { token } = useAuth();
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchTodos = useCallback(async () => {
     if (!token) {
@@ -27,6 +29,7 @@ export function TodosProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/todos`, {
         headers: {
@@ -55,6 +58,8 @@ export function TodosProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error('Failed to fetch todos:', err);
       setTodos([]);
+    } finally {
+      setLoading(false);
     }
   }, [token]);
 
@@ -63,7 +68,7 @@ export function TodosProvider({ children }: { children: React.ReactNode }) {
   }, [fetchTodos]);
 
   return (
-    <TodosContext.Provider value={{ todos, setTodos, fetchTodos }}>
+    <TodosContext.Provider value={{ todos, setTodos, fetchTodos, loading }}>
       {children}
     </TodosContext.Provider>
   );
