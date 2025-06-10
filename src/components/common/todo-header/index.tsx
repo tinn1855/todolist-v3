@@ -11,14 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DeleteMultipleTodoDialog } from '@/components/features/delete-multiple-todo';
-import { Todo } from '@/hooks/use-todos';
 import { useDeleteMultipleTodos } from '@/hooks/use-delete-multi-todo';
 
 interface TodoHeaderProps {
   section: 'incomplete' | 'inprogress' | 'completed';
   onDeleteAllTodo: () => void;
   onMarkAllCompleted: () => void;
-  todo: Todo;
 }
 
 export function TodoHeader({

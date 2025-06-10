@@ -3,17 +3,16 @@ import { TodoItem } from '@/components/common/todo-item';
 import { TodoHeader } from '@/components/common/todo-header';
 import { cn } from '@/lib/utils';
 import { useUpdateTodo, useUpdateTodoStatus } from '@/hooks/use-update-todo';
-import { Todo } from '@/hooks/use-todos';
 import { useDeleteMultipleTodos } from '@/hooks/use-delete-multi-todo';
+import { useTodos } from '@/context/todo-context';
 
 interface TodoSectionProps {
   section: 'incomplete' | 'inprogress' | 'completed';
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 }
 
-export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
+export function TodoSection({ section }: TodoSectionProps) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const { todos, setTodos } = useTodos();
   const { updateTodo } = useUpdateTodo();
   const { deleteTodoByStatus } = useDeleteMultipleTodos();
   const { updateTodoStatus } = useUpdateTodoStatus();
@@ -40,7 +39,8 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
   const handleDrop = useCallback(
     async (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
-      const droppedId = e.dataTransfer.getData('text/plain');
+
+      const droppedId = parseInt(e.dataTransfer.getData('text/plain'), 10);
       const todo = todos.find((t) => t.id === droppedId);
       if (!todo || todo.status === section) {
         setDraggedId(null);
@@ -50,13 +50,13 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
       const updated = { ...todo, status: section };
       const original = [...todos];
 
-      setTodos((prev) => prev.map((t) => (t.id === todo.id ? updated : t)));
+      setTodos((prev) => prev.map((t) => (t.id === droppedId ? updated : t)));
 
       try {
-        await updateTodoStatus(todo.id, section);
+        await updateTodoStatus(droppedId, section);
       } catch (err) {
         console.error(err);
-        setTodos(original); // rollback nếu lỗi
+        setTodos(original);
       } finally {
         setDraggedId(null);
       }
@@ -74,7 +74,6 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
 
       let updatedTodos = [...todos];
 
-      // Nếu khác cột, cập nhật status
       if (draggedTodo.status !== section) {
         const updated = { ...draggedTodo, status: section };
         updatedTodos = updatedTodos.map((t) =>
@@ -107,7 +106,7 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
     [draggedId, todos, section, setTodos, updateTodoStatus]
   );
 
-  const handleUpdate = async (updated: Todo) => {
+  const handleUpdate = async (updated: any) => {
     try {
       const result = await updateTodo(updated);
       if (result) {
