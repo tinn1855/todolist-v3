@@ -3,28 +3,36 @@ import { Todo } from './use-todos';
 import { URL_API } from '@/constants/baseURL';
 import { useAuth } from '@/context/auth-context';
 
-export async function updateTodoStatus(
-  id: string,
-  status: 'incomplete' | 'inprogress' | 'completed',
-  token: string
-): Promise<Todo> {
-  const res = await fetch(`${URL_API}/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ status }),
-  });
+// Cập nhật status của todo
+export function useUpdateTodoStatus() {
+  const { token } = useAuth();
 
-  if (!res.ok) {
-    throw new Error('Failed to update status');
-  }
+  const updateTodoStatus = async (
+    id: string,
+    status: 'incomplete' | 'inprogress' | 'completed'
+  ): Promise<Todo> => {
+    const res = await fetch(`${URL_API}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status }),
+    });
 
-  const updated = await res.json();
-  return updated;
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.message || 'Failed to update status');
+    }
+
+    const updated = await res.json();
+    return updated;
+  };
+
+  return { updateTodoStatus };
 }
 
+// Cập nhật toàn bộ todo (title, description, priority, status...)
 export function useUpdateTodo() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,11 +53,11 @@ export function useUpdateTodo() {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update todo');
+        const error = await res.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to update todo');
       }
 
-      const data = await res.json();
-      return data;
+      return await res.json();
     } catch (err: any) {
       setError(err.message || 'Unknown error');
       return null;

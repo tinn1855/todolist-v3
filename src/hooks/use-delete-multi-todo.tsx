@@ -4,54 +4,36 @@ import { useAuth } from '@/context/auth-context';
 
 export function useDeleteMultipleTodos() {
   const [loading, setLoading] = useState(false);
-
   const { token } = useAuth();
 
-  const deleteMultiTodo = async (ids: string[]) => {
-    if (!ids || ids.length === 0) return;
+  const deleteTodoByStatus = async (
+    status: 'completed' | 'inprogress' | 'incomplete'
+  ) => {
+    if (!status) return;
 
     setLoading(true);
 
     try {
-      const requests = ids.map((id) =>
-        fetch(`${BASE_URL}/todos/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        })
-      );
+      const res = await fetch(`${BASE_URL}/todos/delete-all`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+        body: JSON.stringify({ status }),
+      });
 
-      const results = await Promise.all(requests);
-
-      const errors = await Promise.all(
-        results.map(async (res) => ({
-          ok: res.ok,
-          status: res.status,
-          body: !res.ok ? await res.json().catch(() => ({})) : null,
-        }))
-      );
-
-      const hasError = errors.some((res) => !res.ok);
-
-      if (hasError) {
-        console.error(
-          'Failed deletions:',
-          errors.filter((r) => !r.ok)
-        );
-        throw new Error('Some todos failed to delete');
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
+        throw new Error(error?.message || 'Failed to delete todos');
       }
-    } catch (error) {
-      console.error('Delete multiple failed:', error);
-      throw error;
+    } catch (err) {
+      console.error('Delete by status failed:', err);
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return {
-    deleteMultiTodo,
-    loading,
-  };
+  return { deleteTodoByStatus, loading };
 }

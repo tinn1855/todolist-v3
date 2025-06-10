@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DeleteMultipleTodoDialog } from '@/components/features/delete-multiple-todo';
 import { Todo } from '@/hooks/use-todos';
+import { useDeleteMultipleTodos } from '@/hooks/use-delete-multi-todo';
 
 interface TodoHeaderProps {
   section: 'incomplete' | 'inprogress' | 'completed';
@@ -24,9 +25,9 @@ export function TodoHeader({
   section,
   onDeleteAllTodo,
   onMarkAllCompleted,
-  todo,
 }: TodoHeaderProps) {
   const [open, setOpen] = useState(false);
+  const { loading } = useDeleteMultipleTodos();
 
   const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
 
@@ -55,19 +56,19 @@ export function TodoHeader({
                   <SquareCheckBig /> Mark All Completed
                 </DropdownMenuItem>
               )}
-            <DropdownMenuItem onClick={() => setIsDeleteAllDialogOpen(true)}>
-              <Trash2 /> Delete All
+            <DropdownMenuItem
+              onClick={() => setIsDeleteAllDialogOpen(true)}
+              disabled={loading}
+            >
+              <Trash2 /> {loading ? 'Deleting All' : 'Delete All'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <DeleteMultipleTodoDialog
         open={isDeleteAllDialogOpen}
-        todo={todo}
         onOpenChange={setIsDeleteAllDialogOpen}
-        onDeleteMultiple={() => {
-          onDeleteAllTodo();
-        }}
+        onDeleteMultiple={onDeleteAllTodo}
       />
     </div>
   );

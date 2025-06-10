@@ -7,36 +7,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Todo } from '@/hooks/use-todos';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface DeleteMultipleTodoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  todo: Todo;
   onDeleteMultiple: () => void;
 }
 
 export function DeleteMultipleTodoDialog({
   open,
   onOpenChange,
-  todo,
   onDeleteMultiple,
 }: DeleteMultipleTodoProps) {
   const [loading, setLoading] = useState(false);
 
   const handleDeleteMultipleTodo = async () => {
     setLoading(true);
+
     try {
       await onDeleteMultiple();
       onOpenChange(false);
-      setLoading(false);
-      setTimeout(() => {
-        toast.success('Deleted all todo successfully');
-      }, 1000);
+      toast.success('Deleted all todo successfully');
     } catch (err) {
       console.error('Failed to delete todo:', err);
+    } finally {
       setLoading(false);
     }
   };

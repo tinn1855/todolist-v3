@@ -32,6 +32,7 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const userId = user.id;
   const { token } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState<Omit<Todo, 'id' | 'userId'>>({
     title: '',
@@ -67,6 +68,7 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const payload = {
@@ -82,6 +84,8 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
       toast.success('Created todo successfully');
     } catch (err) {
       toast.error('Failed to create todo');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,8 +126,8 @@ export function AddTodoForm({ section, onClose }: AddTodoFormProps) {
           </Select>
         </div>
         <div>
-          <Button type="submit" className="w-full">
-            Add Todo
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Adding Todo' : 'Add Todo'}
           </Button>
         </div>
       </form>

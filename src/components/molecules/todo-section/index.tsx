@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { TodoItem } from '@/components/common/todo-item';
 import { TodoHeader } from '@/components/common/todo-header';
 import { cn } from '@/lib/utils';
-import { updateTodoStatus, useUpdateTodo } from '@/hooks/use-update-todo';
+import { useUpdateTodo, useUpdateTodoStatus } from '@/hooks/use-update-todo';
 import { Todo } from '@/hooks/use-todos';
 import { useDeleteMultipleTodos } from '@/hooks/use-delete-multi-todo';
 
@@ -14,6 +14,14 @@ interface TodoSectionProps {
 
 export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const { updateTodo } = useUpdateTodo();
+  const { deleteTodoByStatus } = useDeleteMultipleTodos();
+  const { updateTodoStatus } = useUpdateTodoStatus();
+
+  const filteredTodos = useMemo(
+    () => todos.filter((todo) => todo.status === section),
+    [todos, section]
+  );
 
   const handleDragStart = useCallback(
     (e: React.DragEvent<HTMLDivElement>, id: string) => {
@@ -29,57 +37,75 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
     e.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const droppedId = e.dataTransfer.getData('text/plain');
-    if (!droppedId) return;
+  const handleDrop = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const droppedId = e.dataTransfer.getData('text/plain');
+      const todo = todos.find((t) => t.id === droppedId);
+      if (!todo || todo.status === section) {
+        setDraggedId(null);
+        return;
+      }
 
-    const currentTodo = todos.find((t) => t.id === droppedId);
-    if (!currentTodo) return;
+      const updated = { ...todo, status: section };
+      const original = [...todos];
 
-    // Nếu todo đang được kéo sang cột khác (khác status)
-    if (currentTodo.status !== section) {
-      const updatedTodo = { ...currentTodo, status: section };
-      const originalTodos = [...todos];
-
-      setTodos((prev) =>
-        prev.map((todo) => (todo.id === droppedId ? updatedTodo : todo))
-      );
+      setTodos((prev) => prev.map((t) => (t.id === todo.id ? updated : t)));
 
       try {
-        await updateTodoStatus(droppedId, section);
+        await updateTodoStatus(todo.id, section);
       } catch (err) {
-        console.error('Failed to update todo status:', err);
-        setTodos(originalTodos); // rollback
+        console.error(err);
+        setTodos(original); // rollback nếu lỗi
+      } finally {
+        setDraggedId(null);
       }
-    }
-  };
+    },
+    [todos, section, setTodos, updateTodoStatus]
+  );
 
   const handleDropOnItem = useCallback(
-    (e: React.DragEvent<HTMLDivElement>, targetId: string) => {
+    async (e: React.DragEvent<HTMLDivElement>, targetId: string) => {
       e.preventDefault();
       if (!draggedId || draggedId === targetId) return;
 
-      const draggedIndex = todos.findIndex((t) => t.id === draggedId);
-      const targetIndex = todos.findIndex((t) => t.id === targetId);
-      if (
-        draggedIndex === -1 ||
-        targetIndex === -1 ||
-        todos[draggedIndex].status !== section ||
-        todos[targetIndex].status !== section
-      )
-        return;
+      const draggedTodo = todos.find((t) => t.id === draggedId);
+      if (!draggedTodo) return;
 
-      const reordered = [...todos];
-      const [draggedTodo] = reordered.splice(draggedIndex, 1);
-      reordered.splice(targetIndex, 0, draggedTodo);
-      setTodos(reordered);
+      let updatedTodos = [...todos];
+
+      // Nếu khác cột, cập nhật status
+      if (draggedTodo.status !== section) {
+        const updated = { ...draggedTodo, status: section };
+        updatedTodos = updatedTodos.map((t) =>
+          t.id === draggedTodo.id ? updated : t
+        );
+
+        try {
+          await updateTodoStatus(draggedTodo.id, section);
+        } catch (err) {
+          console.error(err);
+          return;
+        }
+      }
+
+      const currentList = updatedTodos.filter((t) => t.status === section);
+      const draggedIndex = currentList.findIndex((t) => t.id === draggedId);
+      const targetIndex = currentList.findIndex((t) => t.id === targetId);
+
+      if (draggedIndex === -1 || targetIndex === -1) return;
+
+      const reordered = [...currentList];
+      const [moved] = reordered.splice(draggedIndex, 1);
+      reordered.splice(targetIndex, 0, moved);
+
+      const otherTodos = updatedTodos.filter((t) => t.status !== section);
+      setTodos([...otherTodos, ...reordered]);
+
+      setDraggedId(null);
     },
-    [draggedId, todos, section, setTodos]
+    [draggedId, todos, section, setTodos, updateTodoStatus]
   );
-
-  const filteredTodos = todos.filter((todo) => todo.status === section);
-  const { updateTodo } = useUpdateTodo();
 
   const handleUpdate = async (updated: Todo) => {
     try {
@@ -90,50 +116,38 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
         );
       }
     } catch (err) {
-      console.error('Failed to update todo:', err);
+      console.error(err);
     }
   };
-  const { deleteMultiTodo } = useDeleteMultipleTodos();
 
   const handleDeleteAllTodo = async () => {
-    const idsTodoDelete = todos
-      .filter((todo) => todo.status === section)
-      .map((todo) => todo.id);
-
-    if (idsTodoDelete.length === 0) return;
-    console.log(idsTodoDelete);
+    if (!filteredTodos.length) return;
 
     try {
-      await deleteMultiTodo(idsTodoDelete);
-      setTodos((prev) =>
-        prev.filter((todo) => !idsTodoDelete.includes(todo.id))
-      );
-      console.log('Todo deleted:', idsTodoDelete);
-    } catch (error) {
-      console.error('Delete fail:', error);
+      await deleteTodoByStatus(section);
+      setTodos((prev) => prev.filter((t) => t.status !== section));
+    } catch (err) {
+      console.error('Delete failed:', err);
     }
   };
 
   const handleMarkAllCompleted = async () => {
-    const idsToUpdate = todos
-      .filter((todo) => todo.status === section)
-      .map((todo) => todo.id);
-
-    if (idsToUpdate.length === 0) return;
-
     try {
-      const updatedTodos = await Promise.all(
+      const idsToUpdate = filteredTodos.map((todo) => todo.id);
+
+      await Promise.all(
         idsToUpdate.map((id) => updateTodoStatus(id, 'completed'))
       );
 
       setTodos((prev) =>
-        prev.map((todo) => {
-          const updated = updatedTodos.find((t) => t.id === todo.id);
-          return updated ?? todo;
-        })
+        prev.map((todo) =>
+          idsToUpdate.includes(todo.id)
+            ? { ...todo, status: 'completed' }
+            : todo
+        )
       );
-    } catch (error) {
-      console.error('Failed to mark all completed:', error);
+    } catch (err) {
+      console.error('Update failed:', err);
     }
   };
 
@@ -141,7 +155,7 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
     <div
       onDrop={handleDrop}
       onDragOver={handleDragOver}
-      className="bg-gray-100 rounded-md p-4 m-2 overflow-y-auto h-screen min-w-[300px] "
+      className="bg-gray-100 rounded-md p-4 m-2 overflow-y-auto h-screen min-w-[300px]"
     >
       <div className="flex items-center gap-2">
         <span
@@ -157,6 +171,7 @@ export function TodoSection({ section, todos, setTodos }: TodoSectionProps) {
           onMarkAllCompleted={handleMarkAllCompleted}
         />
       </div>
+
       <div className="flex flex-col gap-2 mt-2">
         {filteredTodos.length === 0
           ? 'No item'
