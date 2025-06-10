@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useTodos } from '@/context/todo-context';
 import { Todo } from '@/hooks/use-todos';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -32,16 +33,31 @@ export function EditTodoDialog({
   todo,
   onSave,
 }: EditTodoDialogProps) {
-  const [form, setForm] = useState({ ...todo });
+  const [form, setForm] = useState<Todo>({ ...todo });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (key: keyof Todo, value: any) => {
+  const { fetchTodos } = useTodos();
+
+  useEffect(() => {
+    setForm({ ...todo });
+  }, [todo]);
+
+  const handleChange = <K extends keyof Todo>(key: K, value: Todo[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
-    onSave(form);
-    onOpenChange(false);
-    toast.success('Edit successfully');
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await onSave(form);
+      fetchTodos();
+      toast.success('Edit successfully');
+      onOpenChange(false);
+    } catch (err) {
+      toast.error('Failed to update todo');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,18 +72,19 @@ export function EditTodoDialog({
             value={form.title}
             onChange={(e) => handleChange('title', e.target.value)}
             placeholder="Title"
+            autoFocus
           />
           <Textarea
-            value={form.description}
+            value={form.description || ''}
             onChange={(e) => handleChange('description', e.target.value)}
             placeholder="Description"
           />
           <Select
             value={form.priority}
-            onValueChange={(v) => handleChange('priority', v)}
+            onValueChange={(v) => handleChange('priority', v as any)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Theme" />
+              <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="high">High</SelectItem>
@@ -81,7 +98,9 @@ export function EditTodoDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>Save</Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Saving' : 'Save'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

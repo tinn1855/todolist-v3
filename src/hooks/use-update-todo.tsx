@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { Todo } from './use-todos';
 import { URL_API } from '@/constants/baseURL';
+import { useAuth } from '@/context/auth-context';
 
 export async function updateTodoStatus(
   id: string,
-  status: 'incomplete' | 'inprogress' | 'completed'
+  status: 'incomplete' | 'inprogress' | 'completed',
+  token: string
 ): Promise<Todo> {
   const res = await fetch(`${URL_API}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ status }),
   });
@@ -25,6 +28,7 @@ export async function updateTodoStatus(
 export function useUpdateTodo() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
 
   const updateTodo = async (updatedTodo: Todo): Promise<Todo | null> => {
     setUpdating(true);
@@ -35,6 +39,7 @@ export function useUpdateTodo() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedTodo),
       });
