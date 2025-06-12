@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { useCreateAccount } from '@/hooks/use-create-account';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 type FormData = {
   full_name: string;
@@ -11,6 +12,7 @@ type FormData = {
   email: string;
   password: string;
   password_confirmation: string;
+  role: string;
 };
 
 const ErrorMessage = ({ message }: { message?: string }) =>
@@ -27,6 +29,7 @@ export function FormCreateAccount() {
 
   const { mutate, isPending } = useCreateAccount();
   const password = watch('password');
+  const navigate = useNavigate();
 
   const fields = [
     {
@@ -68,10 +71,19 @@ export function FormCreateAccount() {
   ];
 
   const onSubmit = (data: FormData) => {
-    mutate(data, {
+    const payload = {
+      ...data,
+      role: 'user',
+    };
+
+    console.log('Form data submitted:', payload);
+    mutate(payload, {
       onSuccess: () => {
         toast.success('Account was created successfully');
         reset();
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000);
       },
       onError: (error) => {
         const message =
