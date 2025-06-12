@@ -6,11 +6,11 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 type FormData = {
-  fullName: string;
+  full_name: string;
   username: string;
   email: string;
   password: string;
-  reEnterPassword: string;
+  password_confirmation: string;
 };
 
 const ErrorMessage = ({ message }: { message?: string }) =>
@@ -30,7 +30,7 @@ export function FormCreateAccount() {
 
   const fields = [
     {
-      name: 'fullName',
+      name: 'full_name',
       label: 'Full Name',
       type: 'text',
       required: 'Fullname is required',
@@ -58,7 +58,7 @@ export function FormCreateAccount() {
       required: 'Password is required',
     },
     {
-      name: 'reEnterPassword',
+      name: 'password_confirmation',
       label: 'Re-enter Password',
       type: 'password',
       required: 'Please confirm your password',
@@ -68,9 +68,7 @@ export function FormCreateAccount() {
   ];
 
   const onSubmit = (data: FormData) => {
-    const { reEnterPassword, ...payload } = data;
-
-    mutate(payload, {
+    mutate(data, {
       onSuccess: () => {
         toast.success('Account was created successfully');
         reset();

@@ -4,15 +4,16 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 type CreateAccountInput = {
-  fullName: string;
+  full_name: string;
   username: string;
   email: string;
   password: string;
+  password_confirmation: string;
 };
 export function useCreateAccount() {
   return useMutation({
     mutationFn: async (data: CreateAccountInput) => {
-      const response = await axios.post(`${BASE_URL}/users`, data);
+      const response = await axios.post(`${BASE_URL}/register`, data);
       return response.data;
     },
     onError: (error: any) => {
